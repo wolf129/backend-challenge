@@ -1,18 +1,6 @@
 version: '2'
 
 services:
-    app:
-        container_name: backend-challenge-app
-        image: 'docker-spring-boot-postgres:latest'
-        build:
-            context: .
-        depends_on:
-            - db
-        environment:
-            - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sample
-            - SPRING_DATASOURCE_USERNAME=sample
-            - SPRING_DATASOURCE_PASSWORD=sample
-            - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     db:
         container_name: sample_db
         image: postgres:13
