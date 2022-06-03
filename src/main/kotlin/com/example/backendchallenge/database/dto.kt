@@ -1,15 +1,13 @@
 package com.example.backendchallenge.database
 
-import java.time.LocalDateTime
-
 data class TaskDto(
-  val id: Long,
-  val createdAt: LocalDateTime,
-  val updatedAt: LocalDateTime,
-  val dueDate: LocalDateTime,
-  val resolvedAt: LocalDateTime,
+  val id: Long?,
+  val createdAt: Long,
+  val updatedAt: Long,
+  val dueDate: Long,
+  val resolvedAt: Long?,
   val title: String,
-  val description: String,
+  val description: String?,
   val priority: Int,
   val status: String,
 )

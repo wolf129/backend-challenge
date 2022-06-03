@@ -18,8 +18,8 @@ data class Task(
   val resolvedAt: Long? = null,
   @Column(nullable = false)
   val title: String,
-  @Column(nullable = false)
-  val description: String,
+  @Column(nullable = true)
+  val description: String? = null,
   @Column(nullable = false)
   val priority: Int,
   @Column(nullable = false)
