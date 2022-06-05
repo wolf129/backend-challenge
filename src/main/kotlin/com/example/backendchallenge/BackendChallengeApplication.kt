@@ -19,8 +19,6 @@ class BackendChallengeApplication {
     taskSchedulerService.init()
   }
 
-//  @Bean
-//  fun modelMapper() = ModelMapper()
 }
 
 fun main(args: Array<String>) {

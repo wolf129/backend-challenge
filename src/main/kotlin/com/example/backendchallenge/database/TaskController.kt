@@ -2,7 +2,7 @@ package com.example.backendchallenge.database
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,9 +24,9 @@ class TaskController {
   @ResponseStatus(HttpStatus.OK)
   suspend fun fetchTask(
     @PathVariable id: Long,
-  ): TaskDto {
-    val task = taskService.fetchTask(id)
-    return task.toTaskDto()
+  ): ResponseEntity<TaskDto> {
+    val task = taskService.fetchTask(id) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
+    return ResponseEntity.ok().body(task.toTaskDto())
   }
 
   @PostMapping("/tasks")
@@ -42,17 +42,22 @@ class TaskController {
   @ResponseStatus(HttpStatus.OK)
   suspend fun updateTask(
     @RequestBody updateTask: UpdateTaskDto,
-  ): TaskDto {
-    val updatedTask = taskService.updateTask(updateTask)
-    return updatedTask.toTaskDto()
+  ): ResponseEntity<TaskDto> {
+    val updatedTask = taskService.updateTask(updateTask) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
+    return ResponseEntity.ok().body(updatedTask.toTaskDto())
   }
 
   @DeleteMapping("/tasks/{id}")
   @ResponseStatus(HttpStatus.OK)
   suspend fun deleteTask(
     @PathVariable id: Long,
-  ) {
-    taskService.deleteTask(id)
+  ): ResponseEntity<Void> {
+    val successFull = taskService.deleteTask(id)
+    return if (successFull) {
+      ResponseEntity(HttpStatus.OK)
+    } else {
+      ResponseEntity(HttpStatus.NOT_FOUND)
+    }
   }
 
 }
