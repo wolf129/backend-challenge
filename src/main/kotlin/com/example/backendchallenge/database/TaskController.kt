@@ -20,7 +20,6 @@ class TaskController(
   }
 
   @GetMapping("/tasks/{id}", params = ["id"])
-  @ResponseStatus(HttpStatus.OK)
   suspend fun fetchTask(
     @PathVariable id: Long,
   ): ResponseEntity<TaskDto> {
@@ -38,7 +37,6 @@ class TaskController(
   }
 
   @PutMapping("/tasks/{id}")
-  @ResponseStatus(HttpStatus.OK)
   suspend fun updateTask(
     @RequestBody updateTask: UpdateTaskDto,
   ): ResponseEntity<TaskDto> {
@@ -47,7 +45,6 @@ class TaskController(
   }
 
   @DeleteMapping("/tasks/{id}")
-  @ResponseStatus(HttpStatus.OK)
   suspend fun deleteTask(
     @PathVariable id: Long,
   ): ResponseEntity<Void> {
