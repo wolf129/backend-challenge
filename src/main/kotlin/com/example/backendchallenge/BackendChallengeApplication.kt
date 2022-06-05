@@ -1,9 +1,6 @@
 package com.example.backendchallenge
 
-import com.example.backendchallenge.database.TaskScheduler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.backendchallenge.database.TaskSchedulerService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -15,11 +12,11 @@ class BackendChallengeApplication {
 //  private val logger = LoggerFactory.getLogger(BackendChallengeApplication::class.java)
 
   @Autowired
-  private lateinit var taskScheduler: TaskScheduler
+  private lateinit var taskSchedulerService: TaskSchedulerService
 
   @EventListener(ApplicationReadyEvent::class)
   fun runAfterStartup() {
-    taskScheduler.init()
+    taskSchedulerService.init()
   }
 
 //  @Bean

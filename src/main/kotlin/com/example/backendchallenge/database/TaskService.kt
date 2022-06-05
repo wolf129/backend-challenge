@@ -17,7 +17,7 @@ interface TaskService {
 class TaskServiceImpl : TaskService {
 
   @Autowired
-  private lateinit var taskScheduler: TaskScheduler
+  private lateinit var taskSchedulerService: TaskSchedulerService
 
   @Autowired
   private lateinit var taskRepository: TaskRepository
@@ -31,7 +31,7 @@ class TaskServiceImpl : TaskService {
   }
 
   override suspend fun createTask(createTask: CreateTaskDto): Task {
-    return taskScheduler.persistTask(createTask)
+    return taskSchedulerService.persistTask(createTask)
   }
 
   override fun updateTask(updateTask: UpdateTaskDto): Task {

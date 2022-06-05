@@ -5,9 +5,9 @@ data class TaskDto(
   val createdAt: Long,
   val updatedAt: Long,
   val dueDate: Long,
-  val resolvedAt: Long?,
+  val resolvedAt: Long? = null,
   val title: String,
-  val description: String?,
+  val description: String? = null,
   val priority: Int,
   val status: String,
 )
@@ -15,16 +15,16 @@ data class TaskDto(
 data class UpdateTaskDto(
   val id: Long,
   val dueDate: Long,
-  val resolvedAt: Long?,
+  val resolvedAt: Long? = null,
   val title: String,
-  val description: String?,
+  val description: String? = null,
   val priority: Int,
   val status: String,
 )
 
 data class CreateTaskDto(
   val title: String,
-  val description: String?,
+  val description: String? = null,
   val dueDate: Long,
   val priority: Int,
 )

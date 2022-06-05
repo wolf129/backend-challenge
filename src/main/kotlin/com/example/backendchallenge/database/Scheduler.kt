@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
-class TaskScheduler {
+class TaskSchedulerService {
 
   @Autowired
   private lateinit var taskRepository: TaskRepository
@@ -17,15 +17,12 @@ class TaskScheduler {
   private val mutex = Mutex()
   private var taskGeneratorJob: Job? = null
 
-  private fun generateTask(): Task {
+  private fun generateTask(): CreateTaskDto {
     val currentTime = System.currentTimeMillis()
-    return Task(
-      createdAt = currentTime,
-      updatedAt = currentTime,
+    return CreateTaskDto(
       dueDate = currentTime + Random.nextLong(592_000_000L, 2_592_000_000L),
       title = "Task created by scheduler at: $currentTime",
       priority = Random.nextInt(0, 20),
-      status = "created",
     )
   }
 
@@ -49,9 +46,9 @@ class TaskScheduler {
     generatePeriodicTasks()
   }
 
-  suspend fun persistTask(task: CreateTaskDto): Task {
+  suspend fun persistTask(createTask: CreateTaskDto): Task {
     val savedTask = withContext(Dispatchers.IO) {
-      mutex.withLock { taskRepository.save(task) }
+      mutex.withLock { taskRepository.save(createTask.toTask()) }
     }
     return savedTask
   }
