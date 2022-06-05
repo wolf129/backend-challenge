@@ -1,16 +1,17 @@
 package com.example.backendchallenge.database
 
+import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 interface TaskService {
 
-  fun fetchAllTasks(orderBy: String = "createdAt"): List<Task>
-  fun fetchTask(id: Long): Task
+  suspend fun fetchAllTasks(orderBy: String = "createdAt"): List<Task>
+  suspend fun fetchTask(id: Long): Task?
   suspend fun createTask(createTask: CreateTaskDto): Task
-  fun updateTask(updateTask: UpdateTaskDto): Task
-  fun deleteTask(id: Long)
+  suspend fun updateTask(updateTask: UpdateTaskDto): Task?
+  suspend fun deleteTask(id: Long): Boolean
 }
 
 @Service
@@ -22,22 +23,26 @@ class TaskServiceImpl : TaskService {
   @Autowired
   private lateinit var taskRepository: TaskRepository
 
-  override fun fetchAllTasks(orderBy: String): List<Task> {
-    return taskRepository.findAll(Sort.by(orderBy))
+  override suspend fun fetchAllTasks(orderBy: String): List<Task> {
+    return taskRepository.findAllTasks(orderBy)
   }
 
-  override fun fetchTask(id: Long): Task {
-    return taskRepository.findById(id).orElseThrow { ResourceNotFoundException("Unknown Task id: $id") }
+  override suspend fun fetchTask(id: Long): Task? {
+    return taskRepository.findById(id)
   }
 
   override suspend fun createTask(createTask: CreateTaskDto): Task {
     return taskSchedulerService.persistTask(createTask)
   }
 
-  override fun updateTask(updateTask: UpdateTaskDto): Task {
-    val fetchedTask = taskRepository.findById(updateTask.id).orElseThrow { ResourceNotFoundException("Unknown Task id: ${updateTask.id}") }
+  override suspend fun updateTask(updateTask: UpdateTaskDto): Task? {
+    val fetchedTask = taskRepository.findById(updateTask.id) ?: return null
     val currentTime = System.currentTimeMillis()
-    val resolvedTime = if (updateTask.status == "resolved" && fetchedTask.status != "resolved") currentTime else null
+    val resolvedTime = if (updateTask.status == "resolved" && fetchedTask.status != "resolved") {
+      currentTime
+    } else {
+      null
+    }
     val updatedTask = fetchedTask.copy(
       updatedAt = currentTime,
       dueDate = updateTask.dueDate,
@@ -50,9 +55,10 @@ class TaskServiceImpl : TaskService {
     return taskRepository.save(updatedTask)
   }
 
-  override fun deleteTask(id: Long) {
-    val task = taskRepository.findById(id).orElseThrow { ResourceNotFoundException("Unknown Task id: $id") }
+  override suspend fun deleteTask(id: Long): Boolean {
+    val task = taskRepository.findById(id) ?: return false
     taskRepository.delete(task)
+    return true
   }
 
 }

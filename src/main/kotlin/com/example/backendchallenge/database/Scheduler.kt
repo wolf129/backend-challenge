@@ -7,8 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
+interface TaskSchedulerService {
+  fun init()
+  suspend fun persistTask(createTask: CreateTaskDto): Task
+}
+
 @Service
-class TaskSchedulerService {
+class TaskSchedulerServiceImpl : TaskSchedulerService {
 
   @Autowired
   private lateinit var taskRepository: TaskRepository
@@ -42,11 +47,11 @@ class TaskSchedulerService {
     taskGeneratorJob?.cancel()
   }
 
-  fun init() {
+  override fun init() {
     generatePeriodicTasks()
   }
 
-  suspend fun persistTask(createTask: CreateTaskDto): Task {
+  override suspend fun persistTask(createTask: CreateTaskDto): Task {
     val savedTask = withContext(Dispatchers.IO) {
       mutex.withLock { taskRepository.save(createTask.toTask()) }
     }
