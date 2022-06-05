@@ -8,8 +8,8 @@ interface TaskService {
 
   fun fetchAllTasks(orderBy: String = "createdAt"): List<Task>
   fun fetchTask(id: Long): Task
-  suspend fun createTask(task: Task): Task
-  fun updateTask(id: Long, task: Task): Task
+  suspend fun createTask(createTask: CreateTaskDto): Task
+  fun updateTask(updateTask: UpdateTaskDto): Task
   fun deleteTask(id: Long)
 }
 
@@ -30,23 +30,24 @@ class TaskServiceImpl : TaskService {
     return taskRepository.findById(id).orElseThrow { ResourceNotFoundException("Unknown Task id: $id") }
   }
 
-  override suspend fun createTask(task: Task): Task {
-    return taskScheduler.persistTask(task)
+  override suspend fun createTask(createTask: CreateTaskDto): Task {
+    return taskScheduler.persistTask(createTask)
   }
 
-  override fun updateTask(id: Long, task: Task): Task {
-    val fetchedTask = taskRepository.findById(id).orElseThrow { ResourceNotFoundException("Unknown Task id: $id") }
+  override fun updateTask(updateTask: UpdateTaskDto): Task {
+    val fetchedTask = taskRepository.findById(updateTask.id).orElseThrow { ResourceNotFoundException("Unknown Task id: ${updateTask.id}") }
+    val currentTime = System.currentTimeMillis()
+    val resolvedTime = if (updateTask.status == "resolved" && fetchedTask.status != "resolved") currentTime else null
     val updatedTask = fetchedTask.copy(
-      updatedAt = System.currentTimeMillis(),
-      dueDate = task.dueDate,
-      title = task.title,
-      description = task.description,
-      priority = task.priority,
-      status = task.status,
-      resolvedAt = task.resolvedAt,
+      updatedAt = currentTime,
+      dueDate = updateTask.dueDate,
+      title = updateTask.title,
+      description = updateTask.description,
+      priority = updateTask.priority,
+      status = updateTask.status,
+      resolvedAt = resolvedTime,
     )
-    taskRepository.save(updatedTask)
-    return updatedTask
+    return taskRepository.save(updatedTask)
   }
 
   override fun deleteTask(id: Long) {

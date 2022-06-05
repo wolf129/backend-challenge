@@ -1,7 +1,9 @@
 package com.example.backendchallenge
 
 import com.example.backendchallenge.database.TaskScheduler
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -17,7 +19,7 @@ class BackendChallengeApplication {
 
   @EventListener(ApplicationReadyEvent::class)
   fun runAfterStartup() {
-    runBlocking { taskScheduler.init() }
+    taskScheduler.init()
   }
 
 //  @Bean

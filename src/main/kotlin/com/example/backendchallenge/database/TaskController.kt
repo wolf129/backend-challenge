@@ -2,8 +2,7 @@ package com.example.backendchallenge.database
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.validation.annotation.Validated
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -12,63 +11,71 @@ class TaskController {
   @Autowired
   private lateinit var taskService: TaskService
 
-//  @Autowired
-//  private lateinit var modelMapper: ModelMapper
-
-  @GetMapping("/task-list/{orderBy}", "/task-list")
+  @GetMapping("/tasks/{orderBy}", "/tasks", params = ["orderBy"])
   @ResponseStatus(HttpStatus.OK)
-  fun fetchAllTasks(
+  suspend fun fetchAllTasks(
     @PathVariable(required = false) orderBy: String?,
   ): List<TaskDto> {
-    val tasks = taskService.fetchAllTasks(orderBy?: "createdAt")
-    return tasks.map(::mapToDto)
+    val tasks = taskService.fetchAllTasks(orderBy ?: "createdAt")
+    return tasks.map { it.toTaskDto() }
   }
 
-  @GetMapping("/tasks/{id}")
+  @GetMapping("/tasks/{id}", params = ["id"])
   @ResponseStatus(HttpStatus.OK)
-  fun fetchTask(
+  suspend fun fetchTask(
     @PathVariable id: Long,
   ): TaskDto {
     val task = taskService.fetchTask(id)
-    return mapToDto(task)
+    return task.toTaskDto()
   }
 
   @PostMapping("/tasks")
   @ResponseStatus(HttpStatus.CREATED)
   suspend fun createTask(
-    @RequestBody task: TaskDto,
+    @RequestBody createTask: CreateTaskDto,
   ): TaskDto {
-    val savedTask = taskService.createTask(mapFromDto(task))
-    return mapToDto(savedTask)
+    val savedTask = taskService.createTask(createTask)
+    return savedTask.toTaskDto()
   }
 
   @PutMapping("/tasks/{id}")
   @ResponseStatus(HttpStatus.OK)
-  fun updateTask(
-    @PathVariable id: Long,
-    @RequestBody task: TaskDto,
-  ) :TaskDto {
-    val updatedTask = taskService.updateTask(id, mapFromDto(task))
-    return mapToDto(updatedTask)
+  suspend fun updateTask(
+    @RequestBody updateTask: UpdateTaskDto,
+  ): TaskDto {
+    val updatedTask = taskService.updateTask(updateTask)
+    return updatedTask.toTaskDto()
   }
 
   @DeleteMapping("/tasks/{id}")
   @ResponseStatus(HttpStatus.OK)
-  fun deleteTask(
+  suspend fun deleteTask(
     @PathVariable id: Long,
-  ): Map<String, Boolean> {
+  ) {
     taskService.deleteTask(id)
-    return mapOf("deleted" to true)
   }
 
-  private fun mapToDto(task: Task): TaskDto {
-    val (id, createdAt, updatedAt, dueDate, resolvedAt, title, description, priority, status) = task
+  private fun Task.toTaskDto(): TaskDto {
     return TaskDto(id!!, createdAt, updatedAt, dueDate, resolvedAt, title, description, priority, status)
   }
 
-  private fun mapFromDto(taskDto: TaskDto): Task {
-    val (id, createdAt, updatedAt, dueDate, resolvedAt, title, description, priority, status) = taskDto
+  private fun TaskDto.toTask(): Task {
     return Task(id, createdAt, updatedAt, dueDate, resolvedAt, title, description, priority, status)
+  }
+
+  private fun CreateTaskDto.toTask(): Task {
+    val time = System.currentTimeMillis()
+    return Task(
+      id = null,
+      createdAt = time,
+      updatedAt = time,
+      dueDate = dueDate,
+      resolvedAt = null,
+      title = title,
+      description = description,
+      priority = priority,
+      status = "created"
+    )
   }
 
 }
