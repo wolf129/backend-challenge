@@ -1,7 +1,9 @@
 package com.example.backendchallenge.database
 
+import java.util.UUID
+
 data class TaskDto(
-  val id: Long,
+  val id: UUID,
   val createdAt: Long,
   val updatedAt: Long,
   val dueDate: Long,
@@ -13,7 +15,7 @@ data class TaskDto(
 )
 
 data class UpdateTaskDto(
-  val id: Long,
+  val id: UUID,
   val dueDate: Long,
   val resolvedAt: Long? = null,
   val title: String,

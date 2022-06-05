@@ -3,6 +3,7 @@ package com.example.backendchallenge.database
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1")
@@ -21,7 +22,7 @@ class TaskController(
 
   @GetMapping("/tasks/{id}", params = ["id"])
   suspend fun fetchTask(
-    @PathVariable id: Long,
+    @PathVariable id: UUID,
   ): ResponseEntity<TaskDto> {
     val task = taskService.fetchTask(id) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
     return ResponseEntity.ok().body(task.toTaskDto())
@@ -46,7 +47,7 @@ class TaskController(
 
   @DeleteMapping("/tasks/{id}")
   suspend fun deleteTask(
-    @PathVariable id: Long,
+    @PathVariable id: UUID,
   ): ResponseEntity<Void> {
     val successFull = taskService.deleteTask(id)
     return if (successFull) {
