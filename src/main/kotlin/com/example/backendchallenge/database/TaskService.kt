@@ -1,8 +1,6 @@
 package com.example.backendchallenge.database
 
-import kotlinx.coroutines.flow.Flow
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 interface TaskService {
