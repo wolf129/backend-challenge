@@ -5,7 +5,7 @@ import java.util.UUID
 data class TaskDto(
   val id: UUID,
   val createdAt: Long,
-  val updatedAt: Long,
+  val updatedAt: Long? = null,
   val dueDate: Long,
   val resolvedAt: Long? = null,
   val title: String,

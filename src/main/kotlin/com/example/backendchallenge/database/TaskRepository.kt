@@ -9,6 +9,7 @@ interface TaskRepository: JpaRepository<Task, UUID> {
   @Query("SELECT t FROM Task t ORDER BY :orderBy ASC")
   fun findAllTasks(orderBy: String): List<Task>
 
-  fun findByIdOrNull(id: UUID): Task? = findById(id).orElse(null)
-
 }
+
+fun TaskRepository.findByIdOrNull(id: UUID): Task? =
+  findById(id).orElse(null)

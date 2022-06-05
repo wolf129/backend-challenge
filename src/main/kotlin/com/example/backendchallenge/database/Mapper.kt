@@ -11,11 +11,8 @@ fun TaskDto.toTask(): Task {
 fun CreateTaskDto.toTask(): Task {
   val time = System.currentTimeMillis()
   return Task(
-    id = null,
     createdAt = time,
-    updatedAt = time,
     dueDate = dueDate,
-    resolvedAt = null,
     title = title,
     description = description,
     priority = priority,
