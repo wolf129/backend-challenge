@@ -1,6 +1,5 @@
 package com.example.backendchallenge.database
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 interface TaskService {
@@ -13,13 +12,10 @@ interface TaskService {
 }
 
 @Service
-class TaskServiceImpl : TaskService {
-
-  @Autowired
-  private lateinit var taskSchedulerService: TaskSchedulerService
-
-  @Autowired
-  private lateinit var taskRepository: TaskRepository
+class TaskServiceImpl(
+  private val taskSchedulerService: TaskSchedulerService,
+  private val taskRepository: TaskRepository,
+) : TaskService {
 
   override suspend fun fetchAllTasks(orderBy: String): List<Task> {
     return taskRepository.findAllTasks(orderBy)

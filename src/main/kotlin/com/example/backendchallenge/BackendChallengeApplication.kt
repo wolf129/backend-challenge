@@ -16,7 +16,7 @@ class BackendChallengeApplication {
 
   @EventListener(ApplicationReadyEvent::class)
   fun runAfterStartup() {
-    taskSchedulerService.init()
+    taskSchedulerService
   }
 
 }

@@ -3,24 +3,26 @@ package com.example.backendchallenge.database
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 interface TaskSchedulerService {
-  fun init()
+  fun stopGeneratingTasks()
   suspend fun persistTask(createTask: CreateTaskDto): Task
 }
 
 @Service
-class TaskSchedulerServiceImpl : TaskSchedulerService {
-
-  @Autowired
-  private lateinit var taskRepository: TaskRepository
+class TaskSchedulerServiceImpl(
+  private val taskRepository: TaskRepository
+) : TaskSchedulerService {
 
   // Concurrency
   private val mutex = Mutex()
   private var taskGeneratorJob: Job? = null
+
+  init {
+    generatePeriodicTasks()
+  }
 
   private fun generateTask(): CreateTaskDto {
     val currentTime = System.currentTimeMillis()
@@ -43,12 +45,8 @@ class TaskSchedulerServiceImpl : TaskSchedulerService {
     }
   }
 
-  fun stopGeneratingTasks() {
+  override fun stopGeneratingTasks() {
     taskGeneratorJob?.cancel()
-  }
-
-  override fun init() {
-    generatePeriodicTasks()
   }
 
   override suspend fun persistTask(createTask: CreateTaskDto): Task {

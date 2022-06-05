@@ -1,15 +1,14 @@
 package com.example.backendchallenge.database
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1")
-class TaskController {
-  @Autowired
-  private lateinit var taskService: TaskService
+class TaskController(
+  private val taskService: TaskService
+) {
 
   @GetMapping("/tasks/{orderBy}", "/tasks", params = ["orderBy"])
   @ResponseStatus(HttpStatus.OK)
