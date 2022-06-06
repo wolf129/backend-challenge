@@ -1,8 +1,12 @@
-package com.example.backendchallenge.database
+package com.example.backendchallenge.services
 
+import com.example.backendchallenge.domain.CreateTaskDto
+import com.example.backendchallenge.domain.Task
+import com.example.backendchallenge.repositories.TaskRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
@@ -15,6 +19,8 @@ interface TaskSchedulerService {
 class TaskSchedulerServiceImpl(
   private val taskRepository: TaskRepository
 ) : TaskSchedulerService {
+
+  private val logger = LoggerFactory.getLogger(TaskSchedulerService::class.java)
 
   // Concurrency
   private val mutex = Mutex()
@@ -51,7 +57,11 @@ class TaskSchedulerServiceImpl(
 
   override suspend fun persistTask(createTask: CreateTaskDto): Task {
     val savedTask = withContext(Dispatchers.IO) {
-      mutex.withLock { taskRepository.save(createTask.toTask()) }
+      mutex.withLock {
+        val task = taskRepository.save(createTask.toTask())
+        logger.debug("Task: $task persisted")
+        task
+      }
     }
     return savedTask
   }

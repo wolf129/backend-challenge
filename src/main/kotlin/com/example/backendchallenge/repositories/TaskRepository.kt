@@ -1,5 +1,6 @@
-package com.example.backendchallenge.database
+package com.example.backendchallenge.repositories
 
+import com.example.backendchallenge.domain.Task
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.*

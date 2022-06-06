@@ -1,4 +1,8 @@
-package com.example.backendchallenge.database
+package com.example.backendchallenge.services
+
+import com.example.backendchallenge.domain.CreateTaskDto
+import com.example.backendchallenge.domain.Task
+import com.example.backendchallenge.domain.TaskDto
 
 fun Task.toTaskDto(): TaskDto {
   return TaskDto(id!!, createdAt, updatedAt, dueDate, resolvedAt, title, description, priority, status)

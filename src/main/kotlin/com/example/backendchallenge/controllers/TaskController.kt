@@ -1,9 +1,14 @@
-package com.example.backendchallenge.database
+package com.example.backendchallenge.controllers
 
+import com.example.backendchallenge.domain.CreateTaskDto
+import com.example.backendchallenge.domain.TaskDto
+import com.example.backendchallenge.domain.UpdateTaskDto
+import com.example.backendchallenge.services.TaskService
+import com.example.backendchallenge.services.toTaskDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1")
@@ -11,7 +16,7 @@ class TaskController(
   private val taskService: TaskService
 ) {
 
-  @GetMapping("/tasks/{orderBy}", "/tasks", params = ["orderBy"])
+  @GetMapping("/tasks", "/tasks/orderBy={orderBy}")
   @ResponseStatus(HttpStatus.OK)
   suspend fun fetchAllTasks(
     @PathVariable(required = false) orderBy: String?,
@@ -20,7 +25,7 @@ class TaskController(
     return tasks.map { it.toTaskDto() }
   }
 
-  @GetMapping("/tasks/{id}", params = ["id"])
+  @GetMapping("/tasks/id={id}")
   suspend fun fetchTask(
     @PathVariable id: UUID,
   ): ResponseEntity<TaskDto> {
@@ -37,7 +42,7 @@ class TaskController(
     return savedTask.toTaskDto()
   }
 
-  @PutMapping("/tasks/{id}")
+  @PutMapping("/tasks")
   suspend fun updateTask(
     @RequestBody updateTask: UpdateTaskDto,
   ): ResponseEntity<TaskDto> {
@@ -45,7 +50,7 @@ class TaskController(
     return ResponseEntity.ok().body(updatedTask.toTaskDto())
   }
 
-  @DeleteMapping("/tasks/{id}")
+  @DeleteMapping("/tasks/id={id}")
   suspend fun deleteTask(
     @PathVariable id: UUID,
   ): ResponseEntity<Void> {

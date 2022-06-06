@@ -1,4 +1,4 @@
-package com.example.backendchallenge.database
+package com.example.backendchallenge.domain
 
 import java.util.UUID
 
