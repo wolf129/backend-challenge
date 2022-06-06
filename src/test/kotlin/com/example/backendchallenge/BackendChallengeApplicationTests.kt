@@ -22,8 +22,9 @@ class BackendChallengeApplicationTests {
     mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build()
   }
 
-  @Test
-  fun testFetchAllTasks() {
+//  @Test
+//  fun testFetchAllTasks() {
+//    assert(true)
 //    val mvcResult = mvc.perform(
 //      MockMvcRequestBuilders.get("/fetch-all-tasks/oderBy=id")
 //        .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -34,6 +35,6 @@ class BackendChallengeApplicationTests {
 //    val content = mvcResult.response.contentAsString
 //    val taskList = Gson().fromJson(content, Array<Task>::class.java)
 //    assert(taskList.isNotEmpty())
-  }
+//  }
 
 }
